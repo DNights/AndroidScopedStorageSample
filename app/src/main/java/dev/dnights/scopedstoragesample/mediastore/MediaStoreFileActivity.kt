@@ -188,12 +188,27 @@ class MediaStoreFileActivity : BaseActivity() {
     ) {
         val contentValues = ContentValues()
         /**
-         * allowed directories are [DCIM, Pictures]
+         * image allowed directories are [DCIM, Pictures]
+         * audio allowed directories are [Alarms, Music, Notifications, Podcasts, Ringtones]
+         * video allowed directories are [DCIM, Movies]
          */
-        contentValues.put(
-            MediaStore.Files.FileColumns.RELATIVE_PATH,
-            Environment.DIRECTORY_DCIM + fileType.pathByDCIM
-        )
+        when(fileType){
+            MediaStoreFileType.IMAGE ->{
+                contentValues.put(
+                    MediaStore.Files.FileColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + fileType.pathByDCIM
+                )
+            }
+            MediaStoreFileType.AUDIO ->{
+                contentValues.put(
+                    MediaStore.Files.FileColumns.RELATIVE_PATH, Environment.DIRECTORY_MUSIC + fileType.pathByDCIM
+                )
+            }
+            MediaStoreFileType.VIDEO ->{
+                contentValues.put(
+                    MediaStore.Files.FileColumns.RELATIVE_PATH, Environment.DIRECTORY_MOVIES + fileType.pathByDCIM
+                )
+            }
+        }
         contentValues.put(MediaStore.Files.FileColumns.DISPLAY_NAME, fileName)
         contentValues.put(MediaStore.Files.FileColumns.MIME_TYPE, fileType.mimeType)
         contentValues.put(MediaStore.Files.FileColumns.IS_PENDING, 1)
