@@ -51,12 +51,19 @@ class MediaStoreFileActivity : BaseActivity() {
         /**
          * 이전 저장소 방식을 사용하는지 확인
          */
+
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q){
+            Toast.makeText(this, "min sdk is Q. Build.VERSION.SDK_INT : ${Build.VERSION.SDK_INT}", Toast.LENGTH_LONG).show()
+            return
+        }
+
         if (Environment.isExternalStorageLegacy()) {
             Toast.makeText(this, "isExternalStorageLegacy true.", Toast.LENGTH_LONG).show()
-        } else {
-            initMediaFileAdepter()
-            initLayout()
+            return
         }
+
+        initMediaFileAdepter()
+        initLayout()
     }
 
     private fun initMediaFileAdepter() {
