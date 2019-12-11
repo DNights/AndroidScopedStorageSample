@@ -20,7 +20,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".mediastore.MediaStoreFileActivity"/>
+        <activity android:name=".mediastore.MediaStoreFileActivity" />
+        <activity android:name=".SAF.StorageAccessFrameworkActivity" />
     </application>
 
 </manifest>
