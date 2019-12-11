@@ -214,7 +214,7 @@ class MediaStoreFileActivity : BaseActivity() {
         fileOutputStream.close()
 
         contentValues.clear()
-        contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
+        contentValues.put(MediaStore.Files.FileColumns.IS_PENDING, 0)
         context.contentResolver.update(uri, contentValues, null, null)
     }
 
