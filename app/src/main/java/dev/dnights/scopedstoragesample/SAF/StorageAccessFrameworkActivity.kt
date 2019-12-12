@@ -59,7 +59,9 @@ class StorageAccessFrameworkActivity : BaseActivity() {
 
         val adepter = SAFFileAdepter(object : FileClickListeners {
             override fun onClick(sAFFileData: SAFFileData) {
-               
+                if(sAFFileData.isDirectory){
+                    getFileList(sAFFileData.uri)
+                }
             }
 
             override fun onLongClick(sAFFileData: SAFFileData) {
