@@ -16,7 +16,7 @@ class MediaFileAdepter(val clickListeners: FileClickListeners) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_file, parent, false)
+            .inflate(R.layout.item_media_store_file, parent, false)
         return FileViewHolder(view)
     }
 
