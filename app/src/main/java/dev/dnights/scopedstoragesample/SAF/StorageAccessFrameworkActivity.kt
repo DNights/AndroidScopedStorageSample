@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.DocumentsContract
+import android.widget.Toast
 import androidx.documentfile.provider.DocumentFile
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.dnights.scopedstoragesample.BaseActivity
@@ -61,7 +63,8 @@ class StorageAccessFrameworkActivity : BaseActivity() {
             }
 
             override fun onLongClick(sAFFileData: SAFFileData) {
-
+                removeFile(sAFFileData.uri)
+                getFileList(sAFFileData.parentFileUri)
             }
 
         })
@@ -71,7 +74,8 @@ class StorageAccessFrameworkActivity : BaseActivity() {
                 it.name ?: "unknown name",
                 it.type ?: "unknown type",
                 it.uri,
-                it.isDirectory
+                it.isDirectory,
+                it.parentFile?.uri?: Uri.EMPTY
             )
         }
         adepter.setFileList(fileList)
@@ -80,6 +84,14 @@ class StorageAccessFrameworkActivity : BaseActivity() {
         rv_saf_file_list.adapter = adepter
 
 
+    }
+
+
+    private fun removeFile(uri: Uri) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            DocumentsContract.deleteDocument(contentResolver, uri)
+        }
+        Toast.makeText(applicationContext, "Remove File : $uri", Toast.LENGTH_SHORT).show()
     }
 
 }
