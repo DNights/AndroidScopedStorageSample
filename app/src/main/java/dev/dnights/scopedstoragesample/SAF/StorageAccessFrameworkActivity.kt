@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.DocumentsContract
+import android.util.Log
 import android.widget.Toast
 import androidx.documentfile.provider.DocumentFile
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,14 +16,20 @@ import dev.dnights.scopedstoragesample.SAF.adepter.FileClickListeners
 import dev.dnights.scopedstoragesample.SAF.adepter.SAFFileAdepter
 import dev.dnights.scopedstoragesample.SAF.data.SAFFileData
 import kotlinx.android.synthetic.main.activity_saf.*
+import java.io.FileOutputStream
 
 class StorageAccessFrameworkActivity : BaseActivity() {
 
-    private val OPEN_DIRECTORY_REQUEST_CODE = 9901
+    private val OPEN_DIRECTORY_REQUEST_CODE = 1000
+    private val WRITE_REQUEST_CODE: Int = 1100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saf)
+
+        button_create_file.setOnClickListener {
+            createFile("temp_file", "image/*")
+        }
 
         val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
@@ -50,6 +57,13 @@ class StorageAccessFrameworkActivity : BaseActivity() {
 
             getFileList(directoryUri)
 
+        }
+
+        if (requestCode == WRITE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            data?.data?.also { uri ->
+                Log.i("test", "Uri: $uri")
+                writeFile(uri, "temp".toByteArray())
+            }
         }
     }
 
@@ -88,6 +102,28 @@ class StorageAccessFrameworkActivity : BaseActivity() {
 
     }
 
+    private fun createFile(fileName: String, mimeType: String){
+        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = mimeType
+                putExtra(Intent.EXTRA_TITLE, fileName)
+            }
+        } else {
+            TODO("VERSION.SDK_INT < KITKAT")
+        }
+
+        startActivityForResult(intent, WRITE_REQUEST_CODE)
+    }
+
+    private fun writeFile(uri: Uri, data: ByteArray) {
+        contentResolver.openFileDescriptor(uri, "w").use {
+            FileOutputStream(it!!.fileDescriptor).use {fos->
+                fos.write(data)
+                fos.close()
+            }
+        }
+    }
 
     private fun removeFile(uri: Uri) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
