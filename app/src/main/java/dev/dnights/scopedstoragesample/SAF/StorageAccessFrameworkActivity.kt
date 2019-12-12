@@ -17,11 +17,15 @@ import dev.dnights.scopedstoragesample.SAF.adepter.SAFFileAdepter
 import dev.dnights.scopedstoragesample.SAF.data.SAFFileData
 import kotlinx.android.synthetic.main.activity_saf.*
 import java.io.FileOutputStream
+import java.util.*
+
 
 class StorageAccessFrameworkActivity : BaseActivity() {
 
     private val OPEN_DIRECTORY_REQUEST_CODE = 1000
     private val WRITE_REQUEST_CODE: Int = 1100
+
+    private val fileStack : Stack<Uri> = Stack()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,12 +51,21 @@ class StorageAccessFrameworkActivity : BaseActivity() {
         button_create_file.setOnClickListener {
             createFile("temp_file", "image/*")
         }
+
+        button_move_prev.setOnClickListener {
+            if(fileStack.empty()){
+                return@setOnClickListener
+            }
+
+            getFileList(fileStack.pop())
+        }
     }
 
     private fun initAdepter() {
         val adepter = SAFFileAdepter(object : FileClickListeners {
             override fun onClick(safFileData: SAFFileData) {
                 if (safFileData.isDirectory) {
+                    fileStack.push(safFileData.parentFileUri)
                     getFileList(safFileData.uri)
                 }
             }
@@ -95,6 +108,8 @@ class StorageAccessFrameworkActivity : BaseActivity() {
     private fun getFileList(directoryUri: Uri) {
         val documentsTree = DocumentFile.fromTreeUri(application, directoryUri) ?: return
         val childDocuments = documentsTree.listFiles()
+
+        tv_cur_path.text = directoryUri.path
 
         val fileList = childDocuments.map {
             SAFFileData(
