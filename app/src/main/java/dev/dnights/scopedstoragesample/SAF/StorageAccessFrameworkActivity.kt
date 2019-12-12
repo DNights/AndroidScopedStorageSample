@@ -26,7 +26,7 @@ class StorageAccessFrameworkActivity : BaseActivity() {
     private val OPEN_DIRECTORY_REQUEST_CODE = 1000
     private val WRITE_REQUEST_CODE: Int = 1100
 
-    private val fileStack : Stack<Uri> = Stack()
+    private val fileStack: Stack<Uri> = Stack()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +62,7 @@ class StorageAccessFrameworkActivity : BaseActivity() {
         }
 
         button_move_prev.setOnClickListener {
-            if(fileStack.empty()){
+            if (fileStack.empty()) {
                 return@setOnClickListener
             }
 
