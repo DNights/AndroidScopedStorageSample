@@ -3,6 +3,7 @@ package dev.dnights.scopedstoragesample.SAF
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -28,12 +29,15 @@ class StorageAccessFrameworkActivity : BaseActivity() {
 
     private val fileStack: Stack<Uri> = Stack()
 
+    private val pref : SharedPreferences by lazy {
+        getSharedPreferences("SAF_PREF", Context.MODE_PRIVATE)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saf)
 
         initLayout()
-        val pref = getSharedPreferences("SAF_PREF", Context.MODE_PRIVATE)
         val saveUriStr = pref.getString("SAF_URI", "") ?: ""
 
         if (saveUriStr.isEmpty()) {
@@ -102,7 +106,6 @@ class StorageAccessFrameworkActivity : BaseActivity() {
                 )
             }
 
-            val pref = getSharedPreferences("SAF_PREF", Context.MODE_PRIVATE)
             val editer = pref.edit()
             editer.putString("SAF_URI", directoryUri.toString())
             editer.apply()
