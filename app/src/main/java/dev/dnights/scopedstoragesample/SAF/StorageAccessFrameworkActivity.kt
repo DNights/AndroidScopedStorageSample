@@ -1,6 +1,7 @@
 package dev.dnights.scopedstoragesample.SAF
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -32,17 +33,25 @@ class StorageAccessFrameworkActivity : BaseActivity() {
         setContentView(R.layout.activity_saf)
 
         initLayout()
+        val pref = getSharedPreferences("SAF_PREF", Context.MODE_PRIVATE)
+        val saveUriStr = pref.getString("SAF_URI", "") ?: ""
 
-        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
-                flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                        Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+        if (saveUriStr.isEmpty()) {
+            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                            Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+                }
+            } else {
+                TODO("VERSION.SDK_INT < LOLLIPOP")
             }
-        } else {
-            TODO("VERSION.SDK_INT < LOLLIPOP")
+
+            startActivityForResult(intent, OPEN_DIRECTORY_REQUEST_CODE)
+            return
         }
 
-        startActivityForResult(intent, OPEN_DIRECTORY_REQUEST_CODE)
+        getFileList(Uri.parse(saveUriStr))
+
     }
 
     private fun initLayout() {
@@ -92,6 +101,11 @@ class StorageAccessFrameworkActivity : BaseActivity() {
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
             }
+
+            val pref = getSharedPreferences("SAF_PREF", Context.MODE_PRIVATE)
+            val editer = pref.edit()
+            editer.putString("SAF_URI", directoryUri.toString())
+            editer.apply()
 
             getFileList(directoryUri)
 
