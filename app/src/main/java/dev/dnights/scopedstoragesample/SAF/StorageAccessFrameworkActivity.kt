@@ -27,9 +27,7 @@ class StorageAccessFrameworkActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saf)
 
-        button_create_file.setOnClickListener {
-            createFile("temp_file", "image/*")
-        }
+        initLayout()
 
         val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
@@ -41,6 +39,33 @@ class StorageAccessFrameworkActivity : BaseActivity() {
         }
 
         startActivityForResult(intent, OPEN_DIRECTORY_REQUEST_CODE)
+    }
+
+    private fun initLayout() {
+        initAdepter()
+
+        button_create_file.setOnClickListener {
+            createFile("temp_file", "image/*")
+        }
+    }
+
+    private fun initAdepter() {
+        val adepter = SAFFileAdepter(object : FileClickListeners {
+            override fun onClick(safFileData: SAFFileData) {
+                if (safFileData.isDirectory) {
+                    getFileList(safFileData.uri)
+                }
+            }
+
+            override fun onLongClick(safFileData: SAFFileData) {
+                removeFile(safFileData.uri)
+                getFileList(safFileData.parentFileUri)
+            }
+
+        })
+
+        rv_saf_file_list.layoutManager = LinearLayoutManager(rv_saf_file_list.context)
+        rv_saf_file_list.adapter = adepter
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -71,38 +96,21 @@ class StorageAccessFrameworkActivity : BaseActivity() {
         val documentsTree = DocumentFile.fromTreeUri(application, directoryUri) ?: return
         val childDocuments = documentsTree.listFiles()
 
-        val adepter = SAFFileAdepter(object : FileClickListeners {
-            override fun onClick(sAFFileData: SAFFileData) {
-                if(sAFFileData.isDirectory){
-                    getFileList(sAFFileData.uri)
-                }
-            }
-
-            override fun onLongClick(sAFFileData: SAFFileData) {
-                removeFile(sAFFileData.uri)
-                getFileList(sAFFileData.parentFileUri)
-            }
-
-        })
-
         val fileList = childDocuments.map {
             SAFFileData(
                 it.name ?: "unknown name",
                 it.type ?: "unknown type",
                 it.uri,
                 it.isDirectory,
-                it.parentFile?.uri?: Uri.EMPTY
+                it.parentFile?.uri ?: Uri.EMPTY
             )
         }
-        adepter.setFileList(fileList)
 
-        rv_saf_file_list.layoutManager = LinearLayoutManager(rv_saf_file_list.context)
-        rv_saf_file_list.adapter = adepter
-
+        (rv_saf_file_list.adapter as SAFFileAdepter).setFileList(fileList)
 
     }
 
-    private fun createFile(fileName: String, mimeType: String){
+    private fun createFile(fileName: String, mimeType: String) {
         val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
@@ -118,7 +126,7 @@ class StorageAccessFrameworkActivity : BaseActivity() {
 
     private fun writeFile(uri: Uri, data: ByteArray) {
         contentResolver.openFileDescriptor(uri, "w").use {
-            FileOutputStream(it!!.fileDescriptor).use {fos->
+            FileOutputStream(it!!.fileDescriptor).use { fos ->
                 fos.write(data)
                 fos.close()
             }

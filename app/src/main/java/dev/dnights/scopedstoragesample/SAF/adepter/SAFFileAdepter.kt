@@ -55,6 +55,6 @@ class SAFFileAdepter(val clickListeners: FileClickListeners) :
 }
 
 interface FileClickListeners {
-    fun onClick(mediaFileData: SAFFileData)
-    fun onLongClick(mediaFileData: SAFFileData)
+    fun onClick(safFileData: SAFFileData)
+    fun onLongClick(safFileData: SAFFileData)
 }
