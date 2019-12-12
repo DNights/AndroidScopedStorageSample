@@ -14,7 +14,7 @@ import dev.dnights.scopedstoragesample.SAF.adepter.SAFFileAdepter
 import dev.dnights.scopedstoragesample.SAF.data.SAFFileData
 import kotlinx.android.synthetic.main.activity_saf.*
 
-class StorageAccessFrameworkActivity : BaseActivity(){
+class StorageAccessFrameworkActivity : BaseActivity() {
 
     private val OPEN_DIRECTORY_REQUEST_CODE = 9901
 
@@ -55,21 +55,25 @@ class StorageAccessFrameworkActivity : BaseActivity(){
         val documentsTree = DocumentFile.fromTreeUri(application, directoryUri) ?: return
         val childDocuments = documentsTree.listFiles()
 
-        val fileList = childDocuments.map {
-            SAFFileData(it.name?:"unknown name", it.type?:"unknown type", it.uri, it.isDirectory)
-        }
-
         val adepter = SAFFileAdepter(object : FileClickListeners {
-            override fun onClick(mediaFileData: SAFFileData) {
-
+            override fun onClick(sAFFileData: SAFFileData) {
+               
             }
 
-            override fun onLongClick(mediaFileData: SAFFileData) {
+            override fun onLongClick(sAFFileData: SAFFileData) {
 
             }
 
         })
 
+        val fileList = childDocuments.map {
+            SAFFileData(
+                it.name ?: "unknown name",
+                it.type ?: "unknown type",
+                it.uri,
+                it.isDirectory
+            )
+        }
         adepter.setFileList(fileList)
 
         rv_saf_file_list.layoutManager = LinearLayoutManager(rv_saf_file_list.context)
