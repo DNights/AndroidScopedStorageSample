@@ -10,9 +10,12 @@
 > ⚠️ **KO** 샘플과 글은 2019년(Android 10) 기준입니다. 그 이후 API 변경은 아래 "Status" 항목을 확인하세요.
 > ⚠️ **EN** The sample and posts date from 2019 (Android 10). See "Status" below for later API changes.
 
-<!-- TODO: 스크린샷 추가 / add screenshots
-![screenshot](docs/screenshot.png)
--->
+| Main | MediaStore | SAF |
+|:---:|:---:|:---:|
+| <img src="docs/screenshot_main.png" width="220" alt="Main"> | <a href="https://dnight.tistory.com/entry/MediaStore-File-%EB%8B%A4%EB%A3%A8%EA%B8%B0-Android-ScopedStorage"><img src="docs/screenshot_mediastore.png" width="220" alt="MediaStore"></a> | <a href="https://dnight.tistory.com/entry/Storage-Access-Framwork-%EB%8B%A4%EB%A3%A8%EA%B8%B0-Android-ScopedStorage"><img src="docs/screenshot_saf.png" width="220" alt="SAF"></a> |
+
+**KO** Android 10 에뮬레이터에서 찍은 화면입니다. 이미지를 누르면 해당 블로그 글로 이동합니다.
+**EN** Captured on an Android 10 emulator. Click an image to open the related blog post.
 
 ---
 
@@ -94,8 +97,8 @@ try {
 
 ### Known issues in 2019 / 작성 당시 알려진 문제
 
-- **KO** 2019년 글에는 삭제 후에도 파일이 실제로 지워지지 않는 문제와 조회 시 `DATE_TAKEN`이 1970-01-01로 나오는 문제가 적혀 있습니다. 이슈 트래커: [142270549](https://issuetracker.google.com/issues/142270549), [145348304](https://issuetracker.google.com/issues/145348304).
-  **EN** The 2019 post notes that deleted files weren't actually removed and that `DATE_TAKEN` returned 1970-01-01. Issue tracker: [142270549](https://issuetracker.google.com/issues/142270549), [145348304](https://issuetracker.google.com/issues/145348304).
+- **KO** 2019년 글에는 삭제 후에도 파일이 실제로 지워지지 않는 문제와 조회 시 `DATE_TAKEN`이 1970-01-01로 나오는 문제가 적혀 있습니다. (`DATE_TAKEN` 문제는 2026년 10월 Android 10 에뮬레이터에서도 재현됩니다. 위 MediaStore 스크린샷 참고) 이슈 트래커: [142270549](https://issuetracker.google.com/issues/142270549), [145348304](https://issuetracker.google.com/issues/145348304).
+  **EN** The 2019 post notes that deleted files weren't actually removed and that `DATE_TAKEN` returned 1970-01-01. (The `DATE_TAKEN` issue still reproduces on an Android 10 emulator as of October 2026; see the MediaStore screenshot above.) Issue tracker: [142270549](https://issuetracker.google.com/issues/142270549), [145348304](https://issuetracker.google.com/issues/145348304).
 
 ### Changes after Android 10 / Android 10 이후 바뀐 점
 
